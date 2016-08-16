@@ -1,0 +1,16 @@
+A small grocery store has M checkout counters. Customers arrive at the checkout counter at random from 1 to 8 minutes apart with equal probability. The service times vary from 1 to 6 minutes with the probabilites as shown in the table. The problem is to analyze the system by simulating the arrival and service of N customers.
+
+Service Time Distribution:
+
+Time	Prob
+1			0.10
+2			0.20
+3			0.30
+4			0.25
+5			0.10
+6			0.05
+
+i)	Simulate for M = 1
+ii)	Simulate for M = 2
+
+Print the output in a formatted way in the terminal OR push the results into a CSV file.

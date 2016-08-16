@@ -3,12 +3,12 @@ A small grocery store has M checkout counters. Customers arrive at the checkout 
 Service Time Distribution:
 
 Time	Prob
-1			0.10
-2			0.20
-3			0.30
-4			0.25
-5			0.10
-6			0.05
+1 0.10
+2 0.20
+3 0.30
+4 0.25
+5 0.10
+6 0.05
 
 i)	Simulate for M = 1
 ii)	Simulate for M = 2

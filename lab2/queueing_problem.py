@@ -1,5 +1,11 @@
-# Queueing Problem
-# Author: doodhwala
+'''
+Queueing Problem
+Author: doodhwala
+
+This implements the queueing problem for M counters and N customers.
+For implementing single server, modify value of M and remove counter from the list of keys
+And Abel-Baker is implemented in lab3
+'''
 
 import random
 import sys
@@ -108,8 +114,20 @@ Customer, Time since last arrival, arrival time, service time, time service begi
 
 keys = ['customer', 'time_since_last_arrival', 'arrival_time', 'service_time', 'counter', 'time_service_begins', 'time_in_queue', 'time_service_ends', 'time_in_system']
 
+key_pretty = {
+    'customer' : 'Customer',
+    'time_since_last_arrival'  : 'Time Since Last Arrival',
+    'arrival_time'  : 'Arrival Time',
+    'service_time'  : 'Service Time',
+    'counter'  : 'Counter',
+    'time_service_begins'  : 'Time Service Begins',
+    'time_in_queue'  : 'Time in Queue',
+    'time_service_ends'  : 'Time Service Ends',
+    'time_in_system'  : 'Time in System'
+}
+
 with open('simulation.csv', 'w', newline='') as csvfile:
-    sheet = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    sheet.writerow(keys)
+    sheet = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    sheet.writerow([key_pretty[key] for key in keys])
     for customer in customers:
         sheet.writerow([customer[key] for key in keys])

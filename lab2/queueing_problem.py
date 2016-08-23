@@ -4,17 +4,17 @@ Author: doodhwala
 
 This implements the queueing problem for M counters and N customers.
 For implementing single server, modify value of M and remove counter from the list of keys
-And Abel-Baker is implemented in lab3
+And Abdul-Bakra is implemented in lab3
 '''
 
 import random
 import sys
 import csv
 
-# M = input('Enter the number of checkout counters: ')
-M = 2
-# N = input('Enter the number of customers: ')
-N = 20
+# M = 2
+# N = 20
+M = int(input('Enter the number of checkout counters: '))
+N = int(input('Enter the number of customers: '))
 
 MAX_ARRIVAL_TIME = 8
 service_time_digits = 2
@@ -66,6 +66,7 @@ for i in range(N):
         time_since_last_arrival = 0
     arrival_time = time + time_since_last_arrival
     service_time = table_lookup(service_times, customers[i][1])
+    time = arrival_time
 
     customer = {
         "customer": customer,

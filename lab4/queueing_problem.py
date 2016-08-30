@@ -42,7 +42,7 @@ with open('input.in', 'r') as f:
     M = int(lines[times+1])
     lines = lines[times+2:]
 
-    counters = [{"free" : True, "time_when_free" : 0} for i in range(M)]
+    counters = [{} for i in range(M)]
     for i in range(M):
         name, times = lines[0].split()
         times = int(times)
@@ -94,7 +94,8 @@ def addEvent(eventType, timeOfEvent, counter=-1):
 
 def getNextEvent():
     if(FEL):
-
+        event = FEL.pop(0)
+        return event
     else:
         return -1
 
@@ -119,7 +120,36 @@ If it is end of simulation, stop accepting more customers
 But finish the current customers in the counters / queue
 '''
 
+addEvent('E', 60)
+addEvent('A', 0)
+customers_arrived += 1
+
 time = 0
+while(FEL):
+    event = getNextEvent()
+    # TODO: Do some calculations for the cumulative statistics
+
+    time = event[0]
+    if(event[1] == 'A'):
+        if(La or Lb):
+            if(La):
+                La = 0
+                service_time = table_lookup(counters[0]['service_times'], service_times[customers_serviced])
+                addEvent('D', service_time, 0)
+            else:
+                Lb = 0
+                service_time = table_lookup(counters[1]['service_times'], service_times[customers_serviced])
+                addEvent('D', , 1)
+            customers_serviced += 1
+        else:
+            waiting_queue.append()
+        pass
+    elif(event[1] == 'D'):
+
+    else:
+        # Stop allowing more customers
+        pass
+
 for i in range(N):
     customer = i+1
     time_since_last_arrival = table_lookup(arrival_times, customers[i][0])

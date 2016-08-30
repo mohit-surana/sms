@@ -2,7 +2,7 @@
 Queueing Problem
 Author: doodhwala
 
-Drive-in Restaurant simulation using future event list
+Drive-in Restaurant Simulation using Future Event List
 Abdul-Bakra at the counters
 
 '''

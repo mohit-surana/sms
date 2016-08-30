@@ -1,0 +1,26 @@
+Consider a drive-in restaurant where car hops take orders and bring food to the car. Cars arrive in the manner given in table 1. There are two car hops, Abdul and Bakra. Abdul is better able to do work and works a bit faster. The distribution of their service times is given below. Abdul gets the customer if both are idle. Problem is to find how well the arrangement is working. To estimate the system performance, carry out a simulation for 1 hour.
+
+Note: Use future event list!
+
+Time between arrivals:
+(Time, Prob)
+(1, 0.25)
+(2, 0.40)
+(3, 0.20)
+(4, 0.15)
+
+Abdul - Service Time Distribution:
+(Time, Prob)
+(2, 0.30)
+(3, 0.28)
+(4, 0.25)
+(5, 0.17)
+
+Bakra - Service Time Distribution:
+(Time, Prob)
+(3, 0.35)
+(4, 0.25)
+(5, 0.20)
+(6, 0.20)
+
+Print the output in a formatted way in the terminal OR push the results into a CSV file.

@@ -89,7 +89,7 @@ def addEvent(eventType, timeOfEvent, counter=-1):
     else:
         event = (timeOfEvent, eventType, counter)
     FEL.append(event)
-    FEL.sort()
+    FEL.sort(key=lambda x: x[0] - (0.5 if x[1] == 'D' else 0)  - (0.2 if (x[1] == 'D' and x[2] == 0) else 0) )
     # TODO: Convert into insertion instead of sort
 
 def getNextEvents():
@@ -183,6 +183,7 @@ with open('simulation.csv', 'w', newline='') as csvfile:
                     elif(event[2] == 1):
                         service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
                         addEvent('D', time + service_time, 1)
+                    customers_serviced += 1
                     waiting_queue.pop(0)
                     Wq -= 1
                 else:

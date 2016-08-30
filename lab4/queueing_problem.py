@@ -64,8 +64,8 @@ with open('input.in', 'r') as f:
 arrival_random = [0, 26, 98, 90, 29, 42, 74, 80, 68, 22, 48, 34, 45, 24, 34, 63, 38, 80, 42, 56, 89, 18, 51, 71, 16, 92]
 service_random = [95, 21, 51, 92, 89, 38, 13, 61, 50, 49, 39, 53, 88, 1, 81, 53, 81, 64, 1, 67, 1, 47, 75, 57, 87, 47]
 
-La = 0  # State of Abdul (1-available, 0-busy)
-Lb = 0  # State of Bakra (1-available, 0-busy)
+La = 1  # State of Abdul (1-available, 0-busy)
+Lb = 1  # State of Bakra (1-available, 0-busy)
 Wq = 0  # Number of people in waiting queue
 Ci = 0  # Cumulative idle time
 Cw = 0  # Cumulative wait time
@@ -92,12 +92,15 @@ def addEvent(eventType, timeOfEvent, counter=-1):
     FEL.sort()
     # TODO: Convert into insertion instead of sort
 
-def getNextEvent():
+def getNextEvents():
     if(FEL):
         event = FEL.pop(0)
-        return event
+        events = [event]
+        while(FEL and FEL[0][0] == event[0]):
+            events.append(FEL.pop(0))
+        return events
     else:
-        return -1
+        return []
 
 '''
 Logic:
@@ -137,55 +140,57 @@ key_pretty = {
 
 addEvent('E', 60)
 addEvent('A', 0)
-customers_arrived += 1
+customers_arrived += 0
 
 with open('simulation.csv', 'w', newline='') as csvfile:
-    sheet = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    sheet = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     sheet.writerow([key_pretty[key] for key in keys])
 
     time = 0
     while(FEL):
-        event = getNextEvent()
-        new_time = event[0]
+        events = getNextEvents()
+        new_time = events[0][0]
 
         Ci += (new_time - time) * (La + Lb)
         Cw += (new_time - time) * Wq
         time = new_time
 
-        if(event[1] == 'A'):
-            if(La or Lb):
-                if(La):
-                    La = 0
-                    service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
-                    addEvent('D', service_time, 0)
+        for event in events:
+            if(event[1] == 'A'):
+                if(La or Lb):
+                    if(La):
+                        La = 0
+                        service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
+                        addEvent('D', time + service_time, 0)
+                    else:
+                        Lb = 0
+                        service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
+                        addEvent('D', time + service_time, 1)
+                    customers_serviced += 1
                 else:
-                    Lb = 0
-                    service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
-                    addEvent('D', service_time, 1)
-                customers_serviced += 1
-            else:
-                waiting_queue.append(customers_arrived) # Tells about customer number
-                Wq += 1
-            customers_arrived += 1
-            if(customers_arrived < N):
-                time_to_next_arrival = table_lookup(arrival_times, arrival_random[customers_arrived])
-                addEvent('A', time_to_next_arrival)
+                    waiting_queue.append(customers_arrived) # Tells about customer number
+                    Wq += 1
+                customers_arrived += 1
+                if(customers_arrived < N):
+                    time_to_next_arrival = table_lookup(arrival_times, arrival_random[customers_arrived])
+                    addEvent('A', time + time_to_next_arrival)
 
-        elif(event[1] == 'D'):
-            if(Wq):
-                if(event[2] == 0):
-                    service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
-                    addEvent('D', service_time, 0)
-                elif(event[2] == 1):
-                    service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
-                    addEvent('D', service_time, 1)
-                Wq.pop(0)
+            elif(event[1] == 'D'):
+                if(Wq):
+                    if(event[2] == 0):
+                        service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
+                        addEvent('D', time + service_time, 0)
+                    elif(event[2] == 1):
+                        service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
+                        addEvent('D', time + service_time, 1)
+                    waiting_queue.pop(0)
+                    Wq -= 1
+                else:
+                    if(event[2] == 0):
+                        La = 1
+                    elif(event[2] == 1):
+                        Lb = 1
             else:
-                if(event[2] == 0):
-                    La = 1
-                elif(event[2] == 1):
-                    Lb = 1
-        else:
-            # Stop allowing more customers
-            customers_arrived = N+1 # TODO: Use a better condition flag
+                # Stop allowing more customers
+                customers_arrived = N+1 # TODO: Use a better condition flag
         sheet.writerow([time, La, Lb, Wq, waiting_queue, FEL, Ci, Cw])

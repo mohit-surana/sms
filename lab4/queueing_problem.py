@@ -134,16 +134,20 @@ while(FEL):
         if(La or Lb):
             if(La):
                 La = 0
-                service_time = table_lookup(counters[0]['service_times'], service_times[customers_serviced])
+                service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
                 addEvent('D', service_time, 0)
             else:
                 Lb = 0
-                service_time = table_lookup(counters[1]['service_times'], service_times[customers_serviced])
+                service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
                 addEvent('D', , 1)
             customers_serviced += 1
         else:
-            waiting_queue.append()
-        pass
+            waiting_queue.append('dude')
+            Wq += 1
+        customers_arrived += 1
+        if(customers_arrived < N):
+            time_to_next_arrival = table_lookup(arrival_times, arrival_random[customers_arrived])
+            addEvent('A', time_to_next_arrival)
     elif(event[1] == 'D'):
 
     else:

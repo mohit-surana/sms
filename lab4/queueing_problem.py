@@ -103,8 +103,8 @@ def getNextEvent():
 Logic:
 
 Main thing is, we look at the top most event and handle it by event type
-Eg. If it is an arrival, one of these can happen
 
+Eg. If it is an arrival, one of these can happen
 Abel is free and now he becomes busy
     change abel's status and add a departure event for the customer
 Abel is busy but Baker is free
@@ -127,9 +127,12 @@ customers_arrived += 1
 time = 0
 while(FEL):
     event = getNextEvent()
-    # TODO: Do some calculations for the cumulative statistics
+    new_time = event[0]
 
-    time = event[0]
+    Ci += (new_time - time) * (La + Lb)
+    Cw += (new_time - time) * Wq
+    time = new_time
+
     if(event[1] == 'A'):
         if(La or Lb):
             if(La):
@@ -139,7 +142,7 @@ while(FEL):
             else:
                 Lb = 0
                 service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
-                addEvent('D', , 1)
+                addEvent('D', service_time, 1)
             customers_serviced += 1
         else:
             waiting_queue.append('dude')
@@ -148,55 +151,26 @@ while(FEL):
         if(customers_arrived < N):
             time_to_next_arrival = table_lookup(arrival_times, arrival_random[customers_arrived])
             addEvent('A', time_to_next_arrival)
-    elif(event[1] == 'D'):
 
+    elif(event[1] == 'D'):
+        if(Wq):
+            if(event[2] == 0):
+                service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
+                addEvent('D', service_time, 0)
+            elif(event[2] == 1):
+                service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
+                addEvent('D', service_time, 1)
+        else:
+            if(event[2] == 0):
+                La = 1
+            elif(event[2] == 1):
+                Lb = 1
     else:
         # Stop allowing more customers
-        pass
-
-for i in range(N):
-    customer = i+1
-    time_since_last_arrival = table_lookup(arrival_times, customers[i][0])
-    if(i == 0):
-        time_since_last_arrival = 0
-    arrival_time = time + time_since_last_arrival
-    time = arrival_time
-
-    customer = {
-        "customer": customer,
-        "time_since_last_arrival" : time_since_last_arrival,
-        "arrival_time" : arrival_time,
-        "service_time_digits" : customers[i][1]
-    }
-    customers[i] = customer
-
-# Since Abdul is to be selected in preference to Bakra
-
-time = 0
-for i in range(N):
-    this_customer = customers[i]
-    time = this_customer["arrival_time"]
-    if(time > MAX_SIMULATION_TIME):
-        break
-    update_counters_till(time)
-    assigned_counter = find_next_free_counter(time)
-    this_customer["counter"] = assigned_counter[0]
-    this_customer["service_time"] = table_lookup(counters[this_customer["counter"]]["service_times"], customers[i]["service_time_digits"])
-    this_customer["time_in_queue"] = assigned_counter[1] - time
-    this_customer["time_service_begins"] = assigned_counter[1]
-    this_customer["time_service_ends"] = this_customer["time_service_begins"] + this_customer["service_time"]
-    this_customer["time_in_system"] = this_customer["time_in_queue"] + this_customer["service_time"]
-    counter = counters[this_customer["counter"]]
-    counter["free"] = False
-    counter["time_when_free"] = this_customer["time_service_ends"]
-
+        customers_arrived = N+1 # TODO: Use a better condition flag
 
 '''
-Customer, Time since last arrival, arrival time, service time, time service begins, time customer waits in queue, time service ends, time customer spends in system, ~idle time of server
-'''
-
-'''
-keys = ['customer', 'time_since_last_arrival', 'arrival_time', 'time_service_begins', 'service_time', 'time_service_ends', 'time_service_begins', 'service_time', 'time_service_ends', 'time_in_queue', 'time_in_system']
+keys = ['time', 'La', 'Lb', 'Wq', 'Future Event List', 'time_service_ends', 'time_service_begins', 'service_time', 'time_service_ends', 'time_in_queue', 'time_in_system']
 
 key_pretty = {
     'customer' : 'Customer',

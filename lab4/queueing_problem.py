@@ -120,77 +120,72 @@ If it is end of simulation, stop accepting more customers
 But finish the current customers in the counters / queue
 '''
 
+
+keys = ['time', 'La', 'Lb', 'Wq', 'waiting_queue', 'FEL', 'Ci', 'Cw']
+
+key_pretty = {
+    'time'  : 'Time',
+    'La'    : 'La',
+    'Lb'    : 'Lb',
+    'Wq'    : 'Wq',
+    'waiting_queue'  : 'Waiting Queue',
+    'FEL'   : 'Future Event List',
+    'Ci'    : 'Ci',
+    'Cw'    : 'Cw'
+}
+
+
 addEvent('E', 60)
 addEvent('A', 0)
 customers_arrived += 1
 
-time = 0
-while(FEL):
-    event = getNextEvent()
-    new_time = event[0]
-
-    Ci += (new_time - time) * (La + Lb)
-    Cw += (new_time - time) * Wq
-    time = new_time
-
-    if(event[1] == 'A'):
-        if(La or Lb):
-            if(La):
-                La = 0
-                service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
-                addEvent('D', service_time, 0)
-            else:
-                Lb = 0
-                service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
-                addEvent('D', service_time, 1)
-            customers_serviced += 1
-        else:
-            waiting_queue.append('dude')
-            Wq += 1
-        customers_arrived += 1
-        if(customers_arrived < N):
-            time_to_next_arrival = table_lookup(arrival_times, arrival_random[customers_arrived])
-            addEvent('A', time_to_next_arrival)
-
-    elif(event[1] == 'D'):
-        if(Wq):
-            if(event[2] == 0):
-                service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
-                addEvent('D', service_time, 0)
-            elif(event[2] == 1):
-                service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
-                addEvent('D', service_time, 1)
-        else:
-            if(event[2] == 0):
-                La = 1
-            elif(event[2] == 1):
-                Lb = 1
-    else:
-        # Stop allowing more customers
-        customers_arrived = N+1 # TODO: Use a better condition flag
-
-'''
-keys = ['time', 'La', 'Lb', 'Wq', 'Future Event List', 'time_service_ends', 'time_service_begins', 'service_time', 'time_service_ends', 'time_in_queue', 'time_in_system']
-
-key_pretty = {
-    'customer' : 'Customer',
-    'time_since_last_arrival'  : 'Time Since Last Arrival',
-    'arrival_time'  : 'Arrival Time',
-    'service_time'  : 'Service Time',
-    'time_service_begins'  : 'Time Service Begins',
-    'time_in_queue'  : 'Time in Queue',
-    'time_service_ends'  : 'Time Service Ends',
-    'time_in_system'  : 'Time in System'
-}
-
 with open('simulation.csv', 'w', newline='') as csvfile:
     sheet = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     sheet.writerow([key_pretty[key] for key in keys])
-    for customer in customers:
-        raw_row = [customer[key] for key in keys]
-        if(customer["counter"] == 0):
-            raw_row[6:9] = ['-', '-', '-']
+
+    time = 0
+    while(FEL):
+        event = getNextEvent()
+        new_time = event[0]
+
+        Ci += (new_time - time) * (La + Lb)
+        Cw += (new_time - time) * Wq
+        time = new_time
+
+        if(event[1] == 'A'):
+            if(La or Lb):
+                if(La):
+                    La = 0
+                    service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
+                    addEvent('D', service_time, 0)
+                else:
+                    Lb = 0
+                    service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
+                    addEvent('D', service_time, 1)
+                customers_serviced += 1
+            else:
+                waiting_queue.append(customers_arrived) # Tells about customer number
+                Wq += 1
+            customers_arrived += 1
+            if(customers_arrived < N):
+                time_to_next_arrival = table_lookup(arrival_times, arrival_random[customers_arrived])
+                addEvent('A', time_to_next_arrival)
+
+        elif(event[1] == 'D'):
+            if(Wq):
+                if(event[2] == 0):
+                    service_time = table_lookup(counters[0]['service_times'], service_random[customers_serviced])
+                    addEvent('D', service_time, 0)
+                elif(event[2] == 1):
+                    service_time = table_lookup(counters[1]['service_times'], service_random[customers_serviced])
+                    addEvent('D', service_time, 1)
+                Wq.pop(0)
+            else:
+                if(event[2] == 0):
+                    La = 1
+                elif(event[2] == 1):
+                    Lb = 1
         else:
-            raw_row[3:6] = ['-', '-', '-']
-        sheet.writerow(raw_row)
-'''
+            # Stop allowing more customers
+            customers_arrived = N+1 # TODO: Use a better condition flag
+        sheet.writerow([time, La, Lb, Wq, waiting_queue, FEL, Ci, Cw])

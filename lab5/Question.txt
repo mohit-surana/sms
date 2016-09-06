@@ -12,5 +12,5 @@ Weighing Time:
 (16, 0.30)
 
 loading_random = [71, 16, 24, 63, 98, 42, 55]
-weighing_random = [23, 44, 08, 93, 51, 84]
+weighing_random = [23, 47, 08, 93, 51, 84]
 travel_random = [6, 0, 3, 1, 8]

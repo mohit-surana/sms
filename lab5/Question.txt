@@ -1,0 +1,16 @@
+Six dump trucks are used to haul coal from the entrance of a small mine to a railroad. Each truck is loaded by one of two loaders. After loading, the truck moves immediately to the scale to be weighed as soon as possible. Both the loaders and the scale have a First Come First Serve waiting line. Travel time from a loader to the scale is considered negligible. After being weighed, a truck begins a travel time during which it unloads and then returns to the loader queue. The distribution of loading time, weighing time and travel time are given. The purpose of simulation is to estimate the loader and the scale utilization (% busy)
+
+Loading Time:
+(Time, Prob)
+( 5, 0.30)
+(10, 0.50)
+(15, 0.20)
+
+Weighing Time:
+(Time, Prob)
+(12, 0.70)
+(16, 0.30)
+
+loading_random = [71, 16, 24, 63, 98, 42, 55]
+weighing_random = [23, 44, 08, 93, 51, 84]
+travel_random = [6, 0, 3, 1, 8]

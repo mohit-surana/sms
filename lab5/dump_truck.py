@@ -65,41 +65,36 @@ with open('input.in', 'r') as f:
 		travel_times.append((time, prob, cp, rd, rd + rd_range - 1))
 		rd += rd_range
 
-'''
-done till here
-'''
 # Generating data for simulation
 loading_random = [71, 16, 24, 63, 98, 42, 55]
 weighing_random = [23, 47, 8, 93, 51, 84]
 travel_random = [6, 0, 3, 1, 8]
 
-La = 1  # State of Abdul (1-available, 0-busy)
-Lb = 1  # State of Bakra (1-available, 0-busy)
-Wq = 0  # Number of people in waiting queue
-Ci = 0  # Cumulative idle time
-Cw = 0  # Cumulative wait time
+L = 1	# Trucks being loaded
+Lq = 0	# Trucks in the loading queue
+W = 1	# Trucks being weighed
+Wq = 0	# Trucks in the weighing queue
+Bl = 0  # Cumulative time trucks being loaded
+Bs = 0  # Cumulative time trucks being "scaled"
 
-waiting_queue = []
+loading_queue = []
+weighing_queue = []
 
-customers_arrived = 0
-customers_weighd = 0
+trucks_loaded = 0
+trucks_weighed = 0
+trucks_travelled = 0
 
 # Types of events:
-# A - load (time, 'A')
-# D - departure (time, 'D', counter)
-# E - end of simulation (time, 'E')
+# ALQ	- arrival at loading queue (time, 'ALQ', 'DTx')
+# EL	- end of loading (time, 'EL', 'DTx')
+# EW	- end of weighing (time, 'EW', 'DTx')
 
 FEL = []
 
-def addEvent(eventType, timeOfEvent, counter=-1):
-	event = 0
-	if(eventType != 'D'):
-		event = (timeOfEvent, eventType)
-	else:
-		event = (timeOfEvent, eventType, counter)
+def addEvent(eventType, timeOfEvent, dumpTruck):
+	event = (timeOfEvent, eventType, dumpTruck)
 	FEL.append(event)
-	FEL.sort(key=lambda x: x[0] - (0.5 if x[1] == 'D' else 0)  - (0.2 if (x[1] == 'D' and x[2] == 0) else 0) )
-	# TODO: Convert into insertion instead of sort
+	FEL.sort(key=lambda x: 1 if x[1] == 'EW' else (2 if x[1] == 'EL' else 3))
 
 def getNextEvents():
 	if(FEL):
@@ -114,24 +109,33 @@ def getNextEvents():
 '''
 Logic:
 
-Main thing is, we look at the top most event and handle it by event type
+Look at the top most event and handle it by event type:
 
-Eg. If it is an load, one of these can happen
-Abel is free and now he becomes busy
-	change abel's status and add a departure event for the customer
-Abel is busy but Baker is free
-	change Baker's status and add a departure event for the customer
-Both are busy
-	Add to the queue
+EW
+	A dump truck has finished getting weighed.
+	Now it will start a travel time back to the loaders
+	Add an ALQ event
+	If someone is in the weighing queue, add EW event for it
+	Else, change status
 
-If it is a departure,
-See which counter he was in and change the status for that.
-If there are people in the waiting queue, put them into the counter (and add their departure event)
+EL
+	A dump truck has finished getting loaded.
+	Now it will go to get weighed
+		If there is a free weighing scale, then add an EW event
+		If not, add the truck to the weighing queue
+	If there is someone in the loading queue, add EL event for it
+	Else, change status
 
-If it is end of simulation, stop accepting more customers
-But finish the current customers in the counters / queue
+ALQ
+	A dump truck has arrived to get loaded
+	If there is a free loader, then add EL event for it
+	Else, add the truck to the loading queue
+
 '''
 
+'''
+done till here
+'''
 
 keys = ['time', 'La', 'Lb', 'Wq', 'waiting_queue', 'FEL', 'Ci', 'Cw']
 

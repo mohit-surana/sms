@@ -68,33 +68,19 @@ with open('input.in', 'r') as f:
 # Generating data for simulation
 loading_random = [71, 16, 24, 63, 98, 42, 55]
 weighing_random = [23, 47, 8, 93, 51, 84]
-travel_random = [6, 0, 3, 1, 8]
-
-L = 1	# Trucks being loaded
-Lq = 0	# Trucks in the loading queue
-W = 1	# Trucks being weighed
-Wq = 0	# Trucks in the weighing queue
-Bl = 0  # Cumulative time trucks being loaded
-Bs = 0  # Cumulative time trucks being "scaled"
-
-loading_queue = []
-weighing_queue = []
-
-trucks_loaded = 0
-trucks_weighed = 0
-trucks_travelled = 0
+travel_random = [6, 10, 3, 1, 8]
 
 # Types of events:
-# ALQ	- arrival at loading queue (time, 'ALQ', 'DTx')
-# EL	- end of loading (time, 'EL', 'DTx')
-# EW	- end of weighing (time, 'EW', 'DTx')
+# ALQ	- arrival at loading queue (time, 'ALQ', DTx)
+# EL	- end of loading (time, 'EL', DTx)
+# EW	- end of weighing (time, 'EW', DTx)
 
 FEL = []
 
 def addEvent(eventType, timeOfEvent, dumpTruck):
 	event = (timeOfEvent, eventType, dumpTruck)
 	FEL.append(event)
-	FEL.sort(key=lambda x: 1 if x[1] == 'EW' else (2 if x[1] == 'EL' else 3))
+	FEL.sort(key=lambda x: x[0] + (0.1 if x[1] == 'EW' else (0.2 if x[1] == 'EL' else 0.3)))
 
 def getNextEvents():
 	if(FEL):
@@ -105,6 +91,21 @@ def getNextEvents():
 		return events
 	else:
 		return []
+
+keys = ['time', 'L', 'Lq', 'W', 'Wq', 'loading_queue', 'weighing_queue', 'FEL', 'Bl', 'Bs']
+
+key_pretty = {
+	'time'  : 'Time',
+	'L'		: 'L',
+	'Lq'	: 'Lq',
+	'W'		: 'W',
+	'Wq'	: 'Wq',
+	'loading_queue'  : 'Loading Queue',
+	'weighing_queue'  : 'Weighing Queue',
+	'FEL'   : 'Future Event List',
+	'Bl'	: 'Bl',
+	'Bs'	: 'Bs'
+}
 
 '''
 Logic:
@@ -133,78 +134,94 @@ ALQ
 
 '''
 
-'''
-done till here
-'''
+L	= 2	# Trucks being loaded
+Lq	= 3	# Trucks in the loading queue
+W	= 1	# Trucks being weighed
+Wq	= 0	# Trucks in the weighing queue
+Bl	= 0	# Cumulative time trucks being loaded
+Bs	= 0	# Cumulative time trucks being "scaled"
 
-keys = ['time', 'La', 'Lb', 'Wq', 'waiting_queue', 'FEL', 'Ci', 'Cw']
+loading_queue = [4, 5, 6]
+weighing_queue = []
 
-key_pretty = {
-	'time'  : 'Time',
-	'La'	: 'La',
-	'Lb'	: 'Lb',
-	'Wq'	: 'Wq',
-	'waiting_queue'  : 'Waiting Queue',
-	'FEL'   : 'Future Event List',
-	'Ci'	: 'Ci',
-	'Cw'	: 'Cw'
-}
+trucks_loaded = 0
+trucks_weighed = 0
+trucks_travelled = 0
 
+time = 0
 
-addEvent('E', 60)
-addEvent('A', 0)
-customers_arrived += 0
+# TODO: Find a cleaner way of handing the initial state
+
+weigh_time = table_lookup(weigh_times, weighing_random[trucks_weighed])
+addEvent('EW', time + weigh_time, 1)
+trucks_weighed += 1
+
+load_time = table_lookup(load_times, loading_random[trucks_loaded])
+addEvent('EL', time + load_time, 2)
+trucks_loaded += 1
+
+load_time = table_lookup(load_times, loading_random[trucks_loaded])
+addEvent('EL', time + load_time, 3)
+trucks_loaded += 1
 
 with open('simulation.csv', 'w', newline='') as csvfile:
 	sheet = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	sheet.writerow([key_pretty[key] for key in keys])
-
-	time = 0
+	sheet.writerow([time, L, Lq, W, Wq, loading_queue, weighing_queue, FEL, Bl, Bs])
 	while(FEL):
 		events = getNextEvents()
 		new_time = events[0][0]
 
-		Ci += (new_time - time) * (La + Lb)
-		Cw += (new_time - time) * Wq
+		Bl += (new_time - time) * L
+		Bs += (new_time - time) * W
 		time = new_time
 
-		for event in events:
-			if(event[1] == 'A'):
-				if(La or Lb):
-					if(La):
-						La = 0
-						weigh_time = table_lookup(counters[0]['weigh_times'], weigh_random[customers_weighd])
-						addEvent('D', time + weigh_time, 0)
-					else:
-						Lb = 0
-						weigh_time = table_lookup(counters[1]['weigh_times'], weigh_random[customers_weighd])
-						addEvent('D', time + weigh_time, 1)
-					customers_weighd += 1
-				else:
-					waiting_queue.append(customers_arrived) # Tells about customer number
-					Wq += 1
-				customers_arrived += 1
-				if(customers_arrived < N):
-					time_to_next_load = table_lookup(load_times, load_random[customers_arrived])
-					addEvent('A', time + time_to_next_load)
+		if(trucks_loaded == len(loading_random)):
+			events = [event for event in events if event[1] != 'ALQ']
+		if(trucks_weighed == len(weighing_random)):
+			events = [event for event in events if event[1] != 'EL']
+		if(trucks_travelled == len(travel_random)):
+			events = [event for event in events if event[1] != 'EW']
 
-			elif(event[1] == 'D'):
-				if(Wq):
-					if(event[2] == 0):
-						weigh_time = table_lookup(counters[0]['weigh_times'], weigh_random[customers_weighd])
-						addEvent('D', time + weigh_time, 0)
-					elif(event[2] == 1):
-						weigh_time = table_lookup(counters[1]['weigh_times'], weigh_random[customers_weighd])
-						addEvent('D', time + weigh_time, 1)
-					customers_weighd += 1
-					waiting_queue.pop(0)
-					Wq -= 1
+		for event in events:
+			if(event[1] == 'ALQ'):
+				if(L < 2):
+					L += 1
+					load_time = table_lookup(load_times, loading_random[trucks_loaded])
+					addEvent('EL', time + load_time, event[2])
+					trucks_loaded += 1
 				else:
-					if(event[2] == 0):
-						La = 1
-					elif(event[2] == 1):
-						Lb = 1
-			else:
-				# Stop allowing more customers
-				customers_arrived = N+1 # TODO: Use a better condition flag
-		sheet.writerow([time, La, Lb, Wq, waiting_queue, FEL, Ci, Cw])
+					loading_queue.append(event[2])
+					Lq += 1
+
+			elif(event[1] == 'EL'):
+				if(W < 1):
+					W += 1
+					weigh_time = table_lookup(weigh_times, weighing_random[trucks_weighed])
+					addEvent('EW', time + weigh_time, event[2])
+					trucks_weighed += 1
+				else:
+					weighing_queue.append(event[2])
+					Wq += 1
+
+				if(Lq):
+					Lq -= 1
+					load_time = table_lookup(load_times, loading_random[trucks_loaded])
+					addEvent('EL', time + load_time, loading_queue.pop(0))
+					trucks_loaded += 1
+				else:
+					L -= 1
+
+			elif(event[1] == 'EW'):
+				travel_time = table_lookup(travel_times, travel_random[trucks_travelled])
+				addEvent('ALQ', time + travel_time, event[2])
+				trucks_travelled += 1
+
+				if(Wq):
+					Wq -= 1
+					weigh_time = table_lookup(weigh_times, weighing_random[trucks_weighed])
+					addEvent('EW', time + weigh_time, weighing_queue.pop(0))
+					trucks_weighed += 1
+				else:
+					W -= 1
+		sheet.writerow([time, L, Lq, W, Wq, loading_queue, weighing_queue, FEL, Bl, Bs])

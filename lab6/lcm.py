@@ -40,7 +40,7 @@ def RandomGenerator(method, seed):
 gen1 = RandomGenerator('Mixed', 23)
 gen2 = RandomGenerator('Multiplicative-Pow2', 1)
 gen3 = RandomGenerator('Multiplicative-Prime', 7)
-gen4 = RandomGenerator('Mixed-C', 23)
+gen4 = RandomGenerator('Mixed-C', 0)
 
 print(list(gen1)[:10])
 print(list(gen2)[:10])

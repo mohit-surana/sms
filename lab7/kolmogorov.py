@@ -10,7 +10,7 @@ random_numbers = []
 with open('random_numbers.txt', 'r') as f:
 	random_numbers = [float(x) for x in f.read().split()]
 
-N = 50
+N = int(input('Enter the value for N(>35): '))
 
 i = list(range(1, N+1))
 Ri = random_numbers[:N]
@@ -25,9 +25,15 @@ D_plus = max(i_by_N_minus_Ri)
 D_minus = max(Ri_minus_i_minus_1_by_N)
 D = max(D_plus, D_minus)
 
-D_table = { 0.05 : 0.565 }
+def D_table(N, alpha=0.05):
+	if(N<=35):
+		raise Exception()
+	else:
+		return 1.36/(N**0.5)
+
 print('The value of D is', D)
-if(D < D_table[0.05]):
+print('The value of D_table is', D_table(N))
+if(D < D_table(N)):
 	print('Null hypothesis for Uniformity is accepted')
 else:
 	print('Null hypothesis for Uniformity is rejected')

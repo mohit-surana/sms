@@ -30,6 +30,7 @@ x0_sq = sum([Oi_minus_Ei_square[i]/E[i] for i in range(n)])
 alpha = 0.5
 x0_table = { (0.5, 9) : 16.9 }
 print('The value of x0 square is', x0_sq)
+print('The value of x0 square from the table is', x0_table[(alpha, n-1)])
 if(x0_sq < x0_table[(alpha, n-1)]):
 	print('Null hypothesis for Uniformity is accepted')
 else:

@@ -32,6 +32,6 @@ x0_table = { (0.5, 9) : 16.9 }
 print('The value of x0 square is', x0_sq)
 print('The value of x0 square from the table is', x0_table[(alpha, n-1)])
 if(x0_sq < x0_table[(alpha, n-1)]):
-	print('Null hypothesis for Uniformity is accepted')
+	print('We failed to reject the null hypothesis for uniformity for the given random numbers')
 else:
 	print('Null hypothesis for Uniformity is rejected')

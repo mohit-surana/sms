@@ -34,6 +34,6 @@ def D_table(N, alpha=0.05):
 print('The value of D is', D)
 print('The value of D_table is', D_table(N))
 if(D < D_table(N)):
-	print('Null hypothesis for Uniformity is accepted')
+	print('We failed to reject the null hypothesis for uniformity for the given random numbers')
 else:
 	print('Null hypothesis for Uniformity is rejected')

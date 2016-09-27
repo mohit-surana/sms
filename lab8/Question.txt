@@ -1,0 +1,2 @@
+Perform autocorrelation test for N numbers starting from ith number with a lag m.
+Apply the test for different values of i and m, given Z(0.025) = 1.96 and alpha = 0.05

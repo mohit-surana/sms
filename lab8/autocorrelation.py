@@ -47,6 +47,6 @@ Z_table = { alpha/2: 1.96 }
 print('The value of Z is', Z)
 print('The value of Z_table is', Z_table[alpha/2])
 if(-Z_table[alpha/2] <= Z <= Z_table[alpha/2]):
-	print('We failed to reject the null hypothesis for uniformity for the given random numbers')
+	print('We failed to reject the null hypothesis for independence for the given random numbers')
 else:
-	print('Null hypothesis for Uniformity is rejected')
+	print('Null hypothesis for independence is rejected')

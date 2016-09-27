@@ -164,8 +164,8 @@ load_time = table_lookup(load_times, loading_random[trucks_loaded])
 addEvent('EL', time + load_time, 3)
 trucks_loaded += 1
 
-with open('simulation.csv', 'w', newline='') as csvfile:
-	sheet = csv.writer(csvfile, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+with open('simulation.tsv', 'w', newline='') as csvfile:
+	sheet = csv.writer(csvfile, delimiter='\t', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 	sheet.writerow([key_pretty[key] for key in keys])
 	sheet.writerow([time, L, Lq, W, Wq, loading_queue, weighing_queue, FEL, Bl, Bs])
 	while(FEL):

@@ -9,6 +9,8 @@ Generating random variates for Exponential, Uniform and Poisson distributions
 import math
 import random
 
+# TODO: Use user generated random values instead of Python's inbuilt random package
+
 def RVG(method, maxN):
 	numbers = []
 	if(method == 'Exponential'):
@@ -29,6 +31,9 @@ def RVG(method, maxN):
 			x = (b-a)*r + a
 			numbers.append(x)
 	elif(method == 'Poisson'):
+		'''
+			TODO: Complete this
+		'''
 		pass
 	return numbers
 

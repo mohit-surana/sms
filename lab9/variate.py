@@ -22,9 +22,9 @@ def RVG(method, maxN):
 		l = float(input("Enter the value for lambda(l): "))
 		for i in range(maxN):
 			r = random_numbers[index]
+			index = (index + 1) % len(random_numbers)
 			x = (-1/l) * math.log(r)
 			numbers.append(x)
-			index = (index + 1) % len(random_numbers)
 
 	elif(method == 'Uniform'):
 		# Inverse transform method for Uniform Distribution
@@ -32,14 +32,27 @@ def RVG(method, maxN):
 		a, b = list(map(float, input("Enter the values for a and b: ").split()))
 		for i in range(maxN):
 			r = random_numbers[index]
+			index = (index + 1) % len(random_numbers)
 			x = (b-a)*r + a
 			numbers.append(x)
-			index = (index + 1) % len(random_numbers)
 	elif(method == 'Poisson'):
-		'''
-			TODO: Complete this
-		'''
-		pass
+		# Acceptance rejection method
+		# alpha is the value of the mean
+		alpha = float(input("Enter the value for alpha: "))
+		e_power_minus_alpha = math.exp(-alpha)
+		for i in range(maxN):
+			# Step 1
+			n, p = 0, 1
+
+			# Step 2
+			while(True):
+				r = random_numbers[index]
+				index = (index + 1) % len(random_numbers)
+				p = p * r
+				if(p < e_power_minus_alpha):
+					break
+				n += 1
+			numbers.append(n)
 	return numbers
 
 if __name__ == '__main__':

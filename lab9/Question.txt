@@ -1,0 +1,9 @@
+Generate random variates for the following statistical distributions
+	Exponential
+		Input lambda
+	Uniform
+		Inputs a and b
+	Poission
+		Input alpha
+
+Use a large m to generate random numbers.

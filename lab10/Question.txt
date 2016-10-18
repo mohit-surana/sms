@@ -1,0 +1,12 @@
+Level of significance, alpha = 0.05
+Consider 100 random numbers
+
+Poisson's distribution:
+	k <= n/5 = approx 10
+	E[i] = np[i]
+	p[i] = e^-alpha * alpha^i by i!
+	x0_sq[0.05, 8] = 15.5
+
+Exponential Distribution:
+	k <= n/5 = approx 10
+	a[i]= -1/lambda * ln(1-ip)

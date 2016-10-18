@@ -7,10 +7,6 @@ Poisson's distribution:
 	p[i] = e^-alpha * alpha^i by i!
 	x0_sq[0.05, 8] = 15.5
 
-	alpha = 3.64
-
 Exponential Distribution:
 	k <= n/5 = approx 10
 	a[i]= -1/lambda * ln(1-ip)
-
-	lambda = 0.179

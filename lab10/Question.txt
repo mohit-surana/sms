@@ -5,8 +5,15 @@ Poisson's distribution:
 	k <= n/5 = approx 10
 	E[i] = np[i]
 	p[i] = e^-alpha * alpha^i by i!
-	x0_sq[0.05, 8] = 15.5
 
 Exponential Distribution:
 	k <= n/5 = approx 10
 	a[i]= -1/lambda * ln(1-ip)
+
+x0_sq
+	[0.05, 3] = 7.81
+	[0.05, 4] = 9.49
+	[0.05, 5] = 11.1
+	[0.05, 6] = 12.6
+	[0.05, 7] = 14.1
+	[0.05, 8] = 15.5

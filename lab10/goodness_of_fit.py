@@ -82,3 +82,5 @@ if(method in ('Exponential', 'Poisson', 'Exit')):
 		print('We failed to reject the null hypothesis for uniformity for the given random numbers')
 	else:
 		print('Null hypothesis for Uniformity is rejected')
+
+# TODO: Push to csv file

@@ -8,6 +8,7 @@ Apply Chi-Square test on the given variates
 
 import math
 import sys
+import csv
 
 x0_table = { 0.05: { 1:3.84, 2:5.99, 3:7.81, 4:9.49, 5:11.1, 6:12.6, 7:14.1, 8:15.1 } }
 
@@ -68,8 +69,8 @@ if(method in ('Exponential', 'Poisson', 'Exit')):
 
 	Oi_minus_Ei = [O[i] - E[i] for i in range(n)]
 	Oi_minus_Ei_square = [x*x for x in Oi_minus_Ei]
-
-	x0_sq = sum([Oi_minus_Ei_square[i]/E[i] for i in range(n)])
+	Oi_minus_Ei_square_by_Ei = [Oi_minus_Ei_square[i]/E[i] for i in range(n)]
+	x0_sq = sum(Oi_minus_Ei_square_by_Ei)
 
 	k, s = n, 1
 	degrees_of_freedom = k-s-1
@@ -83,4 +84,8 @@ if(method in ('Exponential', 'Poisson', 'Exit')):
 	else:
 		print('Null hypothesis for Uniformity is rejected')
 
-# TODO: Push to csv file
+with open('simulation.csv', 'w', newline='') as csvfile:
+    sheet = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    sheet.writerow(['i', 'O', 'E', 'Oi_minus_Ei', 'Oi_minus_Ei_square', 'Oi_minus_Ei_square_by_Ei'])
+    for row in zip(list(range(n)), O, E, Oi_minus_Ei, Oi_minus_Ei_square, Oi_minus_Ei_square_by_Ei):
+        sheet.writerow(row)

@@ -1,0 +1,2 @@
+Implement Linear Congruential Method for all the three cases.
+Use large numbers for value of m.

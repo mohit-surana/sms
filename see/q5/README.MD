@@ -1,7 +1,8 @@
 # Disclaimer
 
 There are a lot of random stuff in the code
-These are the main concepts
+
+These are the main concepts:
 
 Linear Congruential Method
 

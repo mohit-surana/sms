@@ -18,9 +18,11 @@ Program list for SMS laboratory
 
 	3)	A newspaper seller boy buys papers for 33 cents and sells them for 50 cents. 
 
-	4)	Probabilistic order–level inventory system (maximum inventory level M, is 13 units & the review period N, is 5 days)
+	4)	Probabilistic order–level inventory system
+		(maximum inventory level M, is 13 units & the review period N, is 5 days)
 
-	5)	Write a program to generate random numbers using Linear Congruential method. Use all different conditions to achieve maximal period by the proper choice of a, c, m, & X0.
+	5)	Write a program to generate random numbers using Linear Congruential method.
+		Use all different conditions to achieve maximal period by the proper choice of a, c, m, & X0.
 
 	6)	Write a program to test random numbers for uniformity using KS test. 
 

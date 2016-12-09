@@ -46,3 +46,5 @@ Eternal Hall of Fame
 	Lisa for her notes for Q1, Q3 and Q4
 	Shiva for sharing them with us
 	Mohit for namesake (pun intended ;) )
+		Check out his repo @ https://github.com/cueo/sms-lab
+		Legend says that he has the solutions to the unsolved problems in life

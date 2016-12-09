@@ -34,3 +34,15 @@ Program list for SMS laboratory
 
 	10)	Write a program to generate exponential random variates.
 
+Note
+	
+	Q1, Q3 and Q4 just have relevant notes
+	All you have to do is maintain some counters and run X interations
+	Maximum some extra if else statements
+	Contributions will be accepted and duly thanked (via the Eternal Hall of Fame)
+
+Eternal Hall of Fame
+
+	Lisa for her notes for Q1, Q3 and Q4
+	Shiva for sharing them with us
+	Mohit for namesake (pun intended ;) )

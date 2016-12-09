@@ -3,9 +3,11 @@
 # Lab Exam Pattern
 
 Part – A
+
 	25 marks objective type questions
 
 Part – B
+
 	25 marks for program execution
 
 # Program list for SMS laboratory
